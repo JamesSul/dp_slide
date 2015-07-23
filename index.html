@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Retirement savings decay</title>
+  <meta charset="utf-8">
+  <meta name="description" content="Retirement savings decay">
+  <meta name="author" content="">
+  <meta name="generator" content="slidify" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/default.css" media="all" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/phone.css" 
+    media="only screen and (max-device-width: 480px)" >
+  <link rel="stylesheet" href="libraries/frameworks/io2012/css/slidify.css" >
+  <link rel="stylesheet" href="libraries/highlighters/highlight.js/css/tomorrow.css" />
+  <base target="_blank"> <!-- This amazingness opens all links in a new tab. -->  <link rel=stylesheet href="libraries/widgets/quiz/css/demo.css"></link>
+<link rel=stylesheet href="libraries/widgets/bootstrap/css/bootstrap.css"></link>
+<link rel=stylesheet href="libraries/widgets/nvd3/css/nv.d3.css"></link>
+<link rel=stylesheet href="libraries/widgets/nvd3/css/rNVD3.css"></link>
+<link rel=stylesheet href="./assets/css/ribbons.css"></link>
+
+  
+  <!-- Grab CDN jQuery, fall back to local if offline -->
+  <script src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.7.min.js"></script>
+  <script>window.jQuery || document.write('<script src="libraries/widgets/quiz/js/jquery.js"><\/script>')</script> 
+  <script data-main="libraries/frameworks/io2012/js/slides" 
+    src="libraries/frameworks/io2012/js/require-1.0.8.min.js">
+  </script>
+  
+  <script src="libraries/widgets/nvd3/js/jquery-1.8.2.min.js"></script>
+<script src="libraries/widgets/nvd3/js/d3.v3.min.js"></script>
+<script src="libraries/widgets/nvd3/js/nv.d3.min-new.js"></script>
+<script src="libraries/widgets/nvd3/js/fisheye.js"></script>
+
+
+</head>
+<body style="opacity: 0">
+  <slides class="layout-widescreen">
+    
+    <!-- LOGO SLIDE -->
+        <slide class="title-slide segue nobackground">
+  <hgroup class="auto-fadein">
+    <h1>Retirement savings decay</h1>
+    <h2>A shiny sales pitch</h2>
+    <p><br/></p>
+  </hgroup>
+  <article></article>  
+</slide>
+    
+
+    <!-- SLIDES -->
+    <slide class="" id="slide-1" style="background:;">
+  <hgroup>
+    <h2>Why use the retirement savings decay application?</h2>
+  </hgroup>
+  <article data-timings="">
+    
+<div class="quiz quiz-single well ">
+  <ol>
+<li>To understand how much money you need to retire.</li>
+<li>To plan out your future retirement.</li>
+<li>Because it is super cool.</li>
+<li><em>All of the above!</em></li>
+</ol>
+
+  <button class="quiz-submit btn btn-primary">Submit</button>
+  <button class="quiz-toggle-hint btn btn-info">Show Hint</button>
+  <button class="quiz-show-answer btn btn-success">Show Answer</button>
+  <button class="quiz-clear btn btn-danger">Clear</button>
+  
+  <div class="quiz-hint">
+  <p>Not 1, 2, or 3.</p>
+
+</div>
+<div class="quiz-explanation">
+  <p>It is clearly all of the above...I can&#39;t believe you needed an explanation for this!</p>
+
+</div>
+</div>
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>First you enter in the parameters as shown below:</h2>
+  </hgroup>
+  <article data-timings="">
+    <p><img src="./assets/img/inputs.jpg" alt="Inputs"></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Then the algorithm does its thing.</h2>
+  </hgroup>
+  <article data-timings="">
+    <pre><code class="r">years &lt;- 1:30; remains &lt;- 325000; monthlyRev &lt;- 2500; monthlyCost &lt;- 5000; 
+inflation &lt;- 3; ror &lt;- 8; remaining &lt;- numeric()
+for( i in years) {
+        for( j in 1:12) {
+            remains &lt;- (remains + monthlyRev - monthlyCost*(1 + inflation/1200)) * (1 + ror/1200)
+        }
+        remaining[i] &lt;- remains
+}
+df &lt;- data.frame(year = years, remaining = remaining)
+message &lt;- &quot;You can retire safely!&quot;
+if(min(df$remaining) &lt;= 0) {
+        dest &lt;- min(df$year[df$remaining &lt;= 0])
+        message &lt;- paste(&quot;You will be destitute in year&quot;, dest)
+}
+message
+</code></pre>
+
+<pre><code>## [1] &quot;You will be destitute in year 25&quot;
+</code></pre>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+<slide class="class" id="id" style="background:;">
+  <hgroup>
+    <h2>Also, a chart is created.</h2>
+  </hgroup>
+  <article data-timings="">
+    <div id = 'chart1' class = 'rChart nvd3'></div>
+
+<script type='text/javascript'>
+ $(document).ready(function(){
+      drawchart1()
+    });
+    function drawchart1(){  
+      var opts = {
+ "dom": "chart1",
+"width":    800,
+"height":    400,
+"x": "year",
+"y": "remaining",
+"type": "multiBarChart",
+"id": "chart1" 
+},
+        data = [
+ {
+ "year": 1,
+"remaining": 320485.8643235 
+},
+{
+ "year": 2,
+"remaining": 315597.0576122 
+},
+{
+ "year": 3,
+"remaining":  310302.482355 
+},
+{
+ "year": 4,
+"remaining": 304568.4599627 
+},
+{
+ "year": 5,
+"remaining": 298358.5165397 
+},
+{
+ "year": 6,
+"remaining": 291633.1508754 
+},
+{
+ "year": 7,
+"remaining": 284349.5831779 
+},
+{
+ "year": 8,
+"remaining": 276461.4829536 
+},
+{
+ "year": 9,
+"remaining": 267918.6743011 
+},
+{
+ "year": 10,
+"remaining": 258666.8167437 
+},
+{
+ "year": 11,
+"remaining":  248647.059572 
+},
+{
+ "year": 12,
+"remaining": 237795.6674966 
+},
+{
+ "year": 13,
+"remaining": 226043.6152309 
+},
+{
+ "year": 14,
+"remaining": 213316.1484231 
+},
+{
+ "year": 15,
+"remaining": 199532.3081474 
+},
+{
+ "year": 16,
+"remaining": 184604.4159268 
+},
+{
+ "year": 17,
+"remaining": 168437.5160143 
+},
+{
+ "year": 18,
+"remaining": 150928.7713824 
+},
+{
+ "year": 19,
+"remaining": 131966.8095813 
+},
+{
+ "year": 20,
+"remaining": 111431.0143026 
+},
+{
+ "year": 21,
+"remaining": 89190.75814381 
+},
+{
+ "year": 22,
+"remaining":  65104.5716926 
+},
+{
+ "year": 23,
+"remaining": 39019.24364507 
+},
+{
+ "year": 24,
+"remaining": 10768.84623467 
+},
+{
+ "year": 25,
+"remaining": -19826.3202279 
+},
+{
+ "year": 26,
+"remaining": -52960.87041755 
+},
+{
+ "year": 27,
+"remaining": -88845.57193124 
+},
+{
+ "year": 28,
+"remaining": -127708.6859725 
+},
+{
+ "year": 29,
+"remaining": -169797.4193122 
+},
+{
+ "year": 30,
+"remaining": -215379.4967612 
+} 
+]
+  
+      if(!(opts.type==="pieChart" || opts.type==="sparklinePlus" || opts.type==="bulletChart")) {
+        var data = d3.nest()
+          .key(function(d){
+            //return opts.group === undefined ? 'main' : d[opts.group]
+            //instead of main would think a better default is opts.x
+            return opts.group === undefined ? opts.y : d[opts.group];
+          })
+          .entries(data);
+      }
+      
+      if (opts.disabled != undefined){
+        data.map(function(d, i){
+          d.disabled = opts.disabled[i]
+        })
+      }
+      
+      nv.addGraph(function() {
+        var chart = nv.models[opts.type]()
+          .width(opts.width)
+          .height(opts.height)
+          
+        if (opts.type != "bulletChart"){
+          chart
+            .x(function(d) { return d[opts.x] })
+            .y(function(d) { return d[opts.y] })
+        }
+          
+         
+        chart
+  .showControls(false)
+          
+        chart.xAxis
+  .axisLabel("Year")
+
+        
+        
+        chart.yAxis
+  .axisLabel("Retirement savings")
+      
+       d3.select("#" + opts.id)
+        .append('svg')
+        .datum(data)
+        .transition().duration(500)
+        .call(chart);
+
+       nv.utils.windowResize(chart.update);
+       return chart;
+      });
+    };
+</script>
+
+<p>Kind of like the one above, but <a href="https://jamessul.shinyapps.io/dp_project">way spiffier!</a></p>
+
+  </article>
+  <!-- Presenter Notes -->
+</slide>
+
+    <slide class="backdrop"></slide>
+  </slides>
+  <div class="pagination pagination-small" id='io2012-ptoc' style="display:none;">
+    <ul>
+      <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=1 title='Why use the retirement savings decay application?'>
+         1
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=2 title='First you enter in the parameters as shown below:'>
+         2
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=3 title='Then the algorithm does its thing.'>
+         3
+      </a>
+    </li>
+    <li>
+      <a href="#" target="_self" rel='tooltip' 
+        data-slide=4 title='Also, a chart is created.'>
+         4
+      </a>
+    </li>
+  </ul>
+  </div>  <!--[if IE]>
+    <script 
+      src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js">  
+    </script>
+    <script>CFInstall.check({mode: 'overlay'});</script>
+  <![endif]-->
+</body>
+  <!-- Load Javascripts for Widgets -->
+  <script src="libraries/widgets/quiz/js/jquery.quiz.js"></script>
+<script src="libraries/widgets/quiz/js/mustache.min.js"></script>
+<script src="libraries/widgets/quiz/js/quiz-app.js"></script>
+<script src="libraries/widgets/bootstrap/js/bootstrap.min.js"></script>
+<script src="libraries/widgets/bootstrap/js/bootbox.min.js"></script>
+
+  
+  <script>  
+  $(function (){ 
+    $("#example").popover(); 
+    $("[rel='tooltip']").tooltip(); 
+  });  
+  </script>  
+  <!-- LOAD HIGHLIGHTER JS FILES -->
+  <script src="libraries/highlighters/highlight.js/highlight.pack.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+  <!-- DONE LOADING HIGHLIGHTER JS FILES -->
+   
+  </html>
